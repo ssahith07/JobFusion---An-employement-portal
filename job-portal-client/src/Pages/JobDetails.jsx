@@ -1,21 +1,263 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+// import React, { useEffect, useState } from "react";
+// import { Link, useParams } from "react-router-dom";
+
+// const JobDetails = () => {
+//   const { id } = useParams();
+//   const [job, setJob] = useState({});
+//   const [applied, setApplied] = useState([]);
+//   const [app, setApp] = useState([]);
+//   const [New, setNew] = useState(false); // After page render to know if the user has applied for the job
+//   const sect = localStorage.getItem("selectedSector");
+//   const [resume, setResume] = useState(localStorage.getItem("resume"));
+//   const logo = "https://i.ibb.co/2NTT5xs/NE-Preview1-1.png";
+
+//   useEffect(() => {
+//     if (sect === "private") {
+//       fetch(`http://localhost:5000/all-jobs/${id}`)
+//         .then((res) => res.json())
+//         .then((data) => setJob(data));
+//     } else if (sect === "governement") {
+//       fetch(`http://localhost:5000/all-gjobs/${id}`)
+//         .then((res) => res.json())
+//         .then((data) => setJob(data));
+//     }
+//   }, [id]);
+
+//   useEffect(() => {
+//     try {
+//       const token = localStorage.getItem("token");
+
+//       fetch("http://localhost:5000/applied", {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//       })
+//         .then((res) => res.json())
+//         .then((data) => {
+//           console.log(data);
+//           setApplied(data.jobsApplied);
+//           setApp(applied.find((item) => item === _id));
+//         });
+//     } catch (error) {
+//       console.log(error.message);
+//     }
+//   }, [New]);
+
+//   const handleApply = async () => {
+//     const token = localStorage.getItem("token");
+
+//     fetch(`http://localhost:5000/apply-job/${id}`, {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ seekerId: id }),
+//     })
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error("Network response was not ok");
+//         }
+//         return response.json();
+//       })
+//       .then((data) => {
+//         console.log("Success:", data);
+//         setNew(true);
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+
+//     alert("Applied to the job successfully!!");
+//     // window.location.reload();
+//   };
+
+//   const {
+//     _id,
+//     companyName,
+//     companyLogo,
+//     JobTitle,
+//     minPrice,
+//     maxPrice,
+//     salaryType,
+//     jobLocation,
+//     employmentType,
+//     postingDate,
+//     description,
+//     JobSector,
+//     jobDepartment,
+//     startDate,
+//     endDate,
+//     skills,
+//     govtlink,
+//   } = job;
+
+//   // console.log(app);
+
+//   return (
+//     <>
+//       {sect === "private" ? (
+//         <section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
+//           <Link
+//             to={`/job-details/${_id}`}
+//             className="flex gap-4 flex-col sm:flex-row items-start"
+//           >
+//             <img
+//               src={companyLogo}
+//               alt="Company Logo"
+//               className="h-36 w-36 rounded"
+//             />
+//             <div>
+//               <h4 className="text-primary mb-1">{companyName}</h4>
+//               <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
+//               <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
+//                 <ol className="list-decimal my-4">
+//                   <li>Company Name: {companyName}</li>
+//                   <li>Designation: {JobTitle}</li>
+//                 </ol>
+//               </div>
+//               {!app && !New ? (
+//                 resume ? (
+//                   <button
+//                     className="bg-green px-8 py-2 my-2 text-white rounded-full"
+//                     onClick={handleApply}
+//                   >
+//                     Apply Now
+//                   </button>
+//                 ) : (
+//                   <button
+//                     className="bg-green px-8 py-2 my-2 text-white rounded-full"
+//                     onClick={() => {
+//                       alert("Upload resumee to apply for jobs");
+//                     }}
+//                   >
+//                     Apply Now
+//                   </button>
+//                 )
+//               ) : (
+//                 <>
+//                   <button
+//                     disabled={true}
+//                     className="bg-gray-500 px-8 py-2 my-2 text-white rounded-full"
+//                   >
+//                     Applied
+//                   </button>
+//                   <span className="px-4 font-normal text-gray-500">
+//                     * if you are selected you will receive email or receive call
+//                     to mobile number.
+//                   </span>
+//                 </>
+//               )}
+//               <div className="text-primary text-xl text-bold flex flex-wrap gap-16 mb-2">
+//                 <ol className="list-decimal my-4 space-y-4">
+//                   <li>Key Points :</li>
+//                   <li>Job Posted On : {postingDate}</li>
+//                   <li>Salary : {salaryType}</li>
+//                   <li>Location: {jobLocation}</li>
+//                   <li>Employment Type: {employmentType}</li>
+//                   <li>
+//                     Salary Range: {minPrice}$ to {maxPrice}
+//                   </li>
+//                 </ol>
+//                 <label className="block mb-2 text-lg">
+//                   Required Skill Sets :{" "}
+//                 </label>
+//                 <ul>
+//                   {skills &&
+//                     Array.isArray(skills) &&
+//                     skills.map((skill, index) => (
+//                       <li key={index}>{skill.label}</li>
+//                     ))}
+//                 </ul>
+//               </div>
+//               <p className="text-base text-primary/70 mb-4">
+//                 This role presents a unique chance for career growth in the
+//                 private sector. Private jobs often offer competitive salaries,
+//                 diverse career paths, and a dynamic work environment. As you
+//                 consider applying, take note of the specific skill requirements
+//                 and company culture outlined in the job description. Tailor your
+//                 application to highlight how your skills align with the needs of
+//                 the employer. The application process is seamless, and JobFusion
+//                 ensures your privacy throughout. We wish you the best as you
+//                 embark on this journey toward a rewarding career in the private
+//                 industry.
+//               </p>
+//               <p className="text-base text-primary/70">{description}</p>
+//             </div>
+//           </Link>
+//         </section>
+//       ) : (
+//         <section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
+//           <Link
+//             to={`/job-details/${_id}`}
+//             className="flex gap-4 flex-col sm:flex-row items-start"
+//           >
+//             <img src={logo} alt="Company Logo" className="h-32 w-40 rounded" />
+//             <div>
+//               <h4 className="text-primary mb-1">{JobSector}</h4>
+//               <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
+//               <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
+//                 <ol className="list-decimal my-4">
+//                   <li>Sector: {JobSector}</li>
+//                   <li>Designation: {JobTitle}</li>
+//                 </ol>
+//               </div>
+//               <div className="text-primary text-xl text-bold flex flex-wrap gap-2 mb-2">
+//                 <ol className="list-decimal my-4">
+//                   <li>
+//                     Application Period: {startDate} to {endDate}
+//                   </li>
+//                   <li>Department: {jobDepartment}</li>
+//                   <li>Location: {jobLocation}</li>
+//                   Employment Type: {employmentType}
+//                 </ol>
+//                 <p className="text-base text-primary/70 mb-4">
+//                   Applying for government jobs is a unique opportunity to
+//                   contribute to public service. Ensure you thoroughly understand
+//                   the role, and align your skills and experiences with the job
+//                   requirements. Government jobs often come with a sense of
+//                   responsibility and impact on the community. Take your time to
+//                   craft a detailed application that highlights your
+//                   qualifications and dedication to serving the public.
+//                 </p>
+//               </div>
+//               <p className="text-base text-primary/70">{description}</p>
+//             </div>
+//           </Link>
+
+//           <a
+//             href={govtlink}
+//             target="_blank"
+//             className="bg-green px-8 py-2 my-2 text-white rounded-full"
+//           >
+//             Apply Now
+//           </a>
+//         </section>
+//       )}
+//     </>
+//   );
+// };
+
+// export default JobDetails;
+
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const JobDetails = () => {
   const { id } = useParams();
   const [job, setJob] = useState({});
   const [applied, setApplied] = useState([]);
-  const sect = localStorage.getItem('selectedSector');
+  const sect = localStorage.getItem("selectedSector");
   const logo = "https://i.ibb.co/2NTT5xs/NE-Preview1-1.png";
-
-
+  const resume = localStorage.getItem("resume");
   useEffect(() => {
-    if (sect === 'private') {
+    if (sect === "private") {
       fetch(`http://localhost:5000/all-jobs/${id}`)
         .then((res) => res.json())
         .then((data) => setJob(data));
-    }
-    else if (sect === 'governement') {
+    } else if (sect === "governement") {
       fetch(`http://localhost:5000/all-gjobs/${id}`)
         .then((res) => res.json())
         .then((data) => setJob(data));
@@ -24,7 +266,7 @@ const JobDetails = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
+
     fetch("http://localhost:5000/applied", {
       method: "GET",
       headers: {
@@ -35,18 +277,17 @@ const JobDetails = () => {
       .then((res) => res.json())
       .then((data) => setApplied(data.jobsApplied));
   }, []);
-  
 
   const handleApply = async () => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
 
     fetch(`http://localhost:5000/apply-job/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type" : "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({seekerId : id}),
+      body: JSON.stringify({ seekerId: id }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -65,89 +306,169 @@ const JobDetails = () => {
     window.location.reload();
   };
 
-  const { _id, companyName, companyLogo, JobTitle, minPrice, maxPrice, salaryType, jobLocation, employmentType, postingDate, description, JobSector, jobDepartment, startDate, endDate, skills, govtlink } = job;
+  const {
+    _id,
+    companyName,
+    companyLogo,
+    JobTitle,
+    minPrice,
+    maxPrice,
+    salaryType,
+    jobLocation,
+    employmentType,
+    postingDate,
+    description,
+    JobSector,
+    jobDepartment,
+    startDate,
+    endDate,
+    skills,
+    govtlink,
+  } = job;
 
-  const app = applied.find(item => item === _id);
+  const app = applied ? applied.find((item) => item === _id) : null;
   // console.log(app);
-  
+
   return (
     <>
-      {sect === 'private' ? (<section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
-        <Link to={`/job-details/${_id}`} className="flex gap-4 flex-col sm:flex-row items-start">
-          <img src={companyLogo} alt="Company Logo" className="h-36 w-36 rounded" />
-          <div>
-            <h4 className="text-primary mb-1">{companyName}</h4>
-            <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
-            <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
-              <ol className="list-decimal my-4">
-                <li>Company Name: {companyName}</li>
-                <li>Designation: {JobTitle}</li>
-              </ol>
-            </div>
-            {!app?(<button className="bg-green px-8 py-2 my-2 text-white rounded-full" onClick={handleApply}>
-          Apply Now
-        </button>):(<><button disabled={true} className="bg-gray-500 px-8 py-2 my-2 text-white rounded-full" >
-          Applied 
-        </button>
-        <span className='px-4 font-normal text-gray-500'>* if you are selected you will receive email or receive call to mobile number.</span>
-        </>
-        )}
-            <div className="text-primary text-xl text-bold flex flex-wrap gap-16 mb-2">
-              <ol className="list-decimal my-4 space-y-4">
-                <li>Key Points :</li>
-                <li>Job Posted On : {postingDate}</li>
-                <li>Salary : {salaryType}</li>
-                <li>Location: {jobLocation}</li>
-                <li>Employment Type: {employmentType}</li>
-                <li>Salary Range: {minPrice}$ to {maxPrice}</li>
-              </ol>
-              <label className='block mb-2 text-lg'>Required Skill Sets : </label>
-              <ul>
-                {skills && Array.isArray(skills) && skills.map((skill, index) => (
-                  <li key={index}>{skill.label}</li>
-                ))}
-
-              </ul>
-            </div>
-            <p className="text-base text-primary/70 mb-4">
-            This role presents a unique chance for career growth in the private sector. Private jobs often offer competitive salaries, diverse career paths, and a dynamic work environment. As you consider applying, take note of the specific skill requirements and company culture outlined in the job description. Tailor your application to highlight how your skills align with the needs of the employer. The application process is seamless, and JobFusion ensures your privacy throughout. We wish you the best as you embark on this journey toward a rewarding career in the private industry.
-            </p>
-            <p className="text-base text-primary/70">{description}</p>
-          </div>
-        </Link>
-
-        
-      </section>) : (<section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
-        <Link to={`/job-details/${_id}`} className="flex gap-4 flex-col sm:flex-row items-start">
-          <img src={logo} alt="Company Logo" className="h-32 w-40 rounded" />
-          <div>
-            <h4 className="text-primary mb-1">{JobSector}</h4>
-            <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
-            <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
-              <ol className="list-decimal my-4">
-                <li>Sector: {JobSector}</li>
-                <li>Designation: {JobTitle}</li>
-              </ol>
-            </div>
-            <div className="text-primary text-xl text-bold flex flex-wrap gap-2 mb-2">
-              <ol className="list-decimal my-4">
-                <li>Application Period: {startDate} to {endDate}</li>
-                <li>Department: {jobDepartment}</li>
-                <li>Location: {jobLocation}</li>
-                Employment Type: {employmentType}
-              </ol>
+      {sect === "private" ? (
+        <section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
+          <Link
+            to={`/job-details/${_id}`}
+            className="flex gap-4 flex-col sm:flex-row items-start"
+          >
+            <img
+              src={companyLogo}
+              alt="Company Logo"
+              className="h-36 w-36 rounded"
+            />
+            <div>
+              <h4 className="text-primary mb-1">{companyName}</h4>
+              <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
+              <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
+                <ol className="list-decimal my-4">
+                  <li>Company Name: {companyName}</li>
+                  <li>Designation: {JobTitle}</li>
+                </ol>
+              </div>
+              {!app ? (
+                resume ? (
+                  <button
+                    className="bg-green px-8 py-2 my-2 text-white rounded-full"
+                    onClick={handleApply}
+                  >
+                    Apply Now
+                  </button>
+                ) : (
+                  <button
+                    className="bg-green px-8 py-2 my-2 text-white rounded-full"
+                    onClick={() => {
+                      alert("Please Upload your profile to apply jobs!!!");
+                    }}
+                  >
+                    Apply Now
+                  </button>
+                )
+              ) : (
+                <>
+                  <button
+                    disabled={true}
+                    className="bg-gray-500 px-8 py-2 my-2 text-white rounded-full"
+                  >
+                    Applied
+                  </button>
+                  <span className="px-4 font-normal text-gray-500">
+                    * if you are selected you will receive email or receive call
+                    to mobile number.
+                  </span>
+                </>
+              )}
+              <div className="text-primary text-xl text-bold flex flex-wrap gap-16 mb-2">
+                <ol className="list-decimal my-4 space-y-4">
+                  <li>Key Points :</li>
+                  <li>Job Posted On : {postingDate}</li>
+                  <li>Salary : {salaryType}</li>
+                  <li>Location: {jobLocation}</li>
+                  <li>Employment Type: {employmentType}</li>
+                  <li>
+                    Salary Range: {minPrice}$ to {maxPrice}
+                  </li>
+                </ol>
+                <label className="block mb-2 text-lg">
+                  Required Skill Sets :{" "}
+                </label>
+                <ul>
+                  {skills &&
+                    Array.isArray(skills) &&
+                    skills.map((skill, index) => (
+                      <li key={index}>{skill.label}</li>
+                    ))}
+                </ul>
+              </div>
               <p className="text-base text-primary/70 mb-4">
-                Applying for government jobs is a unique opportunity to contribute to public service. Ensure you thoroughly understand the role, and align your skills and experiences with the job requirements. Government jobs often come with a sense of responsibility and impact on the community. Take your time to craft a detailed application that highlights your qualifications and dedication to serving the public.
+                This role presents a unique chance for career growth in the
+                private sector. Private jobs often offer competitive salaries,
+                diverse career paths, and a dynamic work environment. As you
+                consider applying, take note of the specific skill requirements
+                and company culture outlined in the job description. Tailor your
+                application to highlight how your skills align with the needs of
+                the employer. The application process is seamless, and JobFusion
+                ensures your privacy throughout. We wish you the best as you
+                embark on this journey toward a rewarding career in the private
+                industry.
               </p>
+              <p className="text-base text-primary/70">{description}</p>
             </div>
-            <p className="text-base text-primary/70">{description}</p>
-          </div>
-        </Link>
+          </Link>
+        </section>
+      ) : (
+        <section className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-10">
+          <Link
+            to={`/job-details/${_id}`}
+            className="flex gap-4 flex-col sm:flex-row items-start"
+          >
+            <img src={logo} alt="Company Logo" className="h-32 w-40 rounded" />
+            <div>
+              <h4 className="text-primary mb-1">{JobSector}</h4>
+              <h3 className="text-lg font-semibold mb-2">{JobTitle}</h3>
+              <div className="text-primary text-3xl text-bold flex flex-wrap gap-2 mb-2">
+                <ol className="list-decimal my-4">
+                  <li>Sector: {JobSector}</li>
+                  <li>Designation: {JobTitle}</li>
+                </ol>
+              </div>
+              <div className="text-primary text-xl text-bold flex flex-wrap gap-2 mb-2">
+                <ol className="list-decimal my-4">
+                  <li>
+                    Application Period: {startDate} to {endDate}
+                  </li>
+                  <li>Department: {jobDepartment}</li>
+                  <li>Location: {jobLocation}</li>
+                  Employment Type: {employmentType}
+                </ol>
+                <p className="text-base text-primary/70 mb-4">
+                  Applying for government jobs is a unique opportunity to
+                  contribute to public service. Ensure you thoroughly understand
+                  the role, and align your skills and experiences with the job
+                  requirements. Government jobs often come with a sense of
+                  responsibility and impact on the community. Take your time to
+                  craft a detailed application that highlights your
+                  qualifications and dedication to serving the public.
+                </p>
+              </div>
+              <p className="text-base text-primary/70">{description}</p>
+            </div>
+          </Link>
 
-        <a href={govtlink} target='_blank' className="bg-green px-8 py-2 my-2 text-white rounded-full" >
-          Apply Now
-        </a>
-      </section>)}
+          <a
+            href={govtlink}
+            target="_blank"
+            className="bg-green px-8 py-2 my-2 text-white rounded-full"
+          >
+            Apply Now
+          </a>
+        </section>
+      )}
     </>
   );
 };

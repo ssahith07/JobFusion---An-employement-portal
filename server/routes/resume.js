@@ -95,10 +95,14 @@ router.post(
   }
 );
 
-router.get("/profile-info", async (req, res) => {
+router.get("/profile-info/:id", async (req, res) => {
   const { profileCollection, resumeCollection } = await connectToDatabase();
-  const profiles = await profileCollection.find({}).toArray();
-  res.send(profiles);
+  // const newId = new ObjectId(id);
+  const id = req.params.id;
+  // console.log(id);
+  const profiles = await profileCollection.findOne({ seekerId: id });
+  // console.log(profiles);
+  res.status(200).json(profiles);
 });
 router.get("/testing", async (req, res) => {
   const id = "65c0f8f3e6e33113bce972d8";
@@ -109,12 +113,18 @@ router.get("/testing", async (req, res) => {
 
 router.delete("/all-res/:id", async (req, res) => {
   console.log("deleting resume");
-  const { resumeCollection } = await connectToDatabase();
+  const { resumeCollection, profileCollection } = await connectToDatabase();
   const id = req.params.id;
-  const filter = { _id: new ObjectId(id) };
+  // const filter = { _id: new ObjectId(id) };
+  const filter = { seekerId: id };
   try {
     const resume = await resumeCollection.deleteOne(filter);
-    res.send(resume);
+    const seeker = await profileCollection.deleteOne(filter);
+    if (resume && seeker) {
+      res.send(resume);
+    } else {
+      console.log("Bengindhi!!!");
+    }
   } catch (error) {
     console.error("Error deleting the resume: ", error);
     res.status(500).send({
@@ -123,19 +133,22 @@ router.delete("/all-res/:id", async (req, res) => {
   }
 });
 
+//  recruiter side view resume
+
 // Showing the resume of pdf format using
 router.get("/view-resume/:id", async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
     console.log(id);
+    console.log("Hello");
     // Assuming you have a collection named `resumeCollection`
     // const resume = await resumeCollection.findOne({
     //   _id: new ObjectId(id),
     // });
     const resume = await resumeCollection.findOne({
-        // _id: new ObjectId(id),
-        seekerId : id,
+      // _id: new ObjectId(id),
+      seekerId: id,
     });
 
     // console.log(
@@ -168,19 +181,20 @@ router.get("/view-resume/:id", async (req, res) => {
   }
 });
 
-
+// Seekers
 router.get("/view-res/:id", async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
     console.log(id);
+    console.log("Hello");
     // Assuming you have a collection named `resumeCollection`
     // const resume = await resumeCollection.findOne({
     //   _id: new ObjectId(id),
     // });
     const resume = await resumeCollection.findOne({
-        _id: new ObjectId(id),
-        // seekerId : id,
+      // _id: new ObjectId(id),
+      seekerId: id,
     });
 
     // console.log(

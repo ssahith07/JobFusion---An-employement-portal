@@ -64,7 +64,7 @@ const AppliedUsers = () => {
   const [accept, setAccept] = useState([]);
   const [reject, setReject] = useState([]);
   const [short, setShort] = useState([]);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchAppliedUsers = async () => {
       try {
@@ -76,6 +76,8 @@ const AppliedUsers = () => {
         }
         const data = await response.json();
         setAppliedUsers(data);
+        const { seekerId } = data; // Array =====;
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching applied users:", error.message);
       }
@@ -115,7 +117,7 @@ const AppliedUsers = () => {
 
   const acceptJob = (seekerId) => {
     const token = localStorage.getItem("token");
-  
+
     fetch(`http://localhost:5000/acc/${id}`, {
       method: "POST",
       headers: {
@@ -125,14 +127,17 @@ const AppliedUsers = () => {
       body: JSON.stringify({ action: "accept", seekerId }), // Sending action as "accept"
     })
       .then((res) => res.json())
-      .then((data) => console.log("Accepted:", data))
+      .then((data) => {
+        console.log("Accepted:", data);
+        window.location.reload();
+      })
       .catch((error) => console.error("Error accepting job:", error));
   };
-  
+
   // Similarly, a function to handle rejecting a job
   const rejectJob = (seekerId) => {
     const token = localStorage.getItem("token");
-  
+
     fetch(`http://localhost:5000/acc/${id}`, {
       method: "POST",
       headers: {
@@ -142,13 +147,16 @@ const AppliedUsers = () => {
       body: JSON.stringify({ action: "reject", seekerId }), // Sending action as "reject"
     })
       .then((res) => res.json())
-      .then((data) => console.log("Rejected:", data))
+      .then((data) => {
+        console.log("Rejected:", data);
+        window.location.reload();
+      })
       .catch((error) => console.error("Error rejecting job:", error));
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
+
     fetch(`http://localhost:5000/acc-rej/${id}`, {
       method: "GET",
       headers: {
@@ -159,15 +167,16 @@ const AppliedUsers = () => {
       .then((res) => res.json())
       .then((data) => {
         setShort(data);
+        console.log(data);
         setAccept(data.accepted || []);
         setReject(data.rejected || []);
       });
   }, []);
-  const {accepted,rejected} = short;
-  const ac = accept.includes(appliedUsers.seekerId)
+  const { accepted, rejected } = short;
+  const ac = accept.includes(appliedUsers.seekerId);
   const re = reject.includes(appliedUsers.seekerId);
-  console.log(ac)
-  console.log(re)
+  console.log(accepted);
+  console.log("Hello " + ac);
 
   return (
     <div className="container px-4 py-4 mx-auto my-8">
@@ -201,18 +210,33 @@ const AppliedUsers = () => {
                   View Resume
                 </button>
               </td>
-              {!(ac || re) ? (<td className="py-2 px-4 space-x-4 border-b">
-                <button className="bg-green text-white py-1 px-2 rounded hover:bg-white hover:text-green" onClick={()=>acceptJob(user.seekerId)} >
-                  Accept
-                </button>
-                <button className="bg-red-500 text-white py-1 px-2 rounded hover:bg-white hover:text-red-500" onClick={()=>rejectJob(user.seekerId)}>
-                  Reject
-                </button>
-              </td>) : ac ? (<button className="bg-green text-white py-1 px-2 rounded hover:bg-white hover:text-green">
+              {!(
+                accepted.includes(user.seekerId) ||
+                rejected.includes(user.seekerId)
+              ) ? (
+                <td className="py-2 px-4 space-x-4 border-b">
+                  <button
+                    className="bg-green text-white py-1 px-2 rounded hover:bg-white hover:text-green"
+                    onClick={() => acceptJob(user.seekerId)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="bg-red-500 text-white py-1 px-2 rounded hover:bg-white hover:text-red-500"
+                    onClick={() => rejectJob(user.seekerId)}
+                  >
+                    Reject
+                  </button>
+                </td>
+              ) : accepted.includes(user.seekerId) ? (
+                <button className="bg-green text-white py-1 px-2 rounded hover:bg-white hover:text-green">
                   Accepted
-                </button>) : (<button className="bg-red-500 text-white py-1 px-2 rounded hover:bg-white hover:text-green">
+                </button>
+              ) : (
+                <button className="bg-red-500 text-white py-1 px-2 rounded hover:bg-white hover:text-green">
                   Rejected
-                </button>)}
+                </button>
+              )}
             </tr>
           ))}
         </tbody>
