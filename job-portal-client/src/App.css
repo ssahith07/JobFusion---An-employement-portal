@@ -95,7 +95,7 @@ li {
   cursor: pointer;
 }
 
-.checkmark {
+.checkmark1 {
   position: absolute;
   top: 0;
   left: 0;
@@ -105,29 +105,31 @@ li {
   border-radius: 50%;
 }
 
+
+
 .all {
   background: linear-gradient(blue, crimson);
 }
 
-.sidebar-label-container:hover input ~ .checkmark {
+.sidebar-label-container:hover input ~ .checkmark1 {
   background-color: #ccc;
 }
 
-.sidebar-label-container input:checked ~ .checkmark {
+.sidebar-label-container input:checked ~ .checkmark1 {
   background-color: #2196f3;
 }
 
-.checkmark:after {
+.checkmark1:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-.sidebar-label-container input:checked ~ .checkmark:after {
+.sidebar-label-container input:checked ~ .checkmark1:after {
   display: block;
 }
 
-.sidebar-label-container .checkmark:after {
+.sidebar-label-container .checkmark1:after {
   top: 6.4px;
   left: 6.4px;
   width: 7px;

@@ -5,7 +5,7 @@ import CreatableSelect from "react-select/creatable";
 const PostJob = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
-  const [sect, setSect] = useState("govt");
+  const [sect, setSect] = useState("private");
   const {
     register,
     handleSubmit,

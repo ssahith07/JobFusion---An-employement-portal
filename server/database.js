@@ -4,8 +4,8 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@emp-portal.hzccd3b.mongodb.net/empPortal?retryWrites=true&w=majority`;
-// const uri = "mongodb://localhost:27017/emp-portal";
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@emp-portal.hzccd3b.mongodb.net/empPortal?retryWrites=true&w=majority`;
+const uri = "mongodb://localhost:27017/emp-portal";
 
 mongoose
   .connect(uri)

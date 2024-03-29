@@ -316,6 +316,7 @@ const PostResume = () => {
       })
       .then((data) => {
         setInfo(data);
+        localStorage.setItem("resume", true);
         data ? setIsResumeUploaded(true) : setIsResumeUploaded(false);
         reset({
           fullName: data.fullName || "",
@@ -368,8 +369,8 @@ const PostResume = () => {
         // setInfo(data);
         // setResume(true);
         // localStorage.setItem('email', data.email);
-        localStorage.setItem("resume", true);
-        localStorage.setItem("info", JSON.stringify(data));
+        
+        // localStorage.setItem("info", JSON.stringify(data));
 
         alert("Resume has been uploaded successfully!");
         //   window.reload();

@@ -172,11 +172,15 @@ const AppliedUsers = () => {
         setReject(data.rejected || []);
       });
   }, []);
-  const { accepted, rejected } = short;
-  const ac = accept.includes(appliedUsers.seekerId);
-  const re = reject.includes(appliedUsers.seekerId);
-  console.log(accepted);
-  console.log("Hello " + ac);
+  const { accepted, rejected } = short || [];
+  // const ac = accept.includes(appliedUsers.seekerId);
+  // const re = reject.includes(appliedUsers.seekerId);
+  // console.log(accepted);
+  // console.log("Hello " + ac);
+
+  if (appliedUsers.length === 0) {
+    return <div className="container mx-auto my-8 text-center text-xl">No users have applied</div>;
+  }
 
   return (
     <div className="container px-4 py-4 mx-auto my-8">
@@ -211,8 +215,9 @@ const AppliedUsers = () => {
                 </button>
               </td>
               {!(
-                accepted.includes(user.seekerId) ||
-                rejected.includes(user.seekerId)
+                accept.includes(user.seekerId)||
+                reject.includes(user.seekerId)
+                
               ) ? (
                 <td className="py-2 px-4 space-x-4 border-b">
                   <button
@@ -228,12 +233,12 @@ const AppliedUsers = () => {
                     Reject
                   </button>
                 </td>
-              ) : accepted.includes(user.seekerId) ? (
-                <button className="bg-green text-white py-1 px-2 rounded hover:bg-white hover:text-green">
+              ) : accept.includes(user.seekerId) ? (
+                <button className="bg-green text-white mt-2 py-1 px-2 rounded hover:bg-white hover:text-green">
                   Accepted
                 </button>
               ) : (
-                <button className="bg-red-500 text-white py-1 px-2 rounded hover:bg-white hover:text-green">
+                <button className="bg-red-500 text-white mt-2 py-1 px-2 rounded hover:bg-white hover:text-green">
                   Rejected
                 </button>
               )}

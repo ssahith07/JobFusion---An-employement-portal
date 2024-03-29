@@ -40,6 +40,10 @@ const Navbar = () => {
     // window.location.reload();
     localStorage.removeItem("token");
     localStorage.removeItem("resume");
+    localStorage.removeItem("id");
+    localStorage.removeItem("selectedSector");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
     navigate("/login");
   };
 
