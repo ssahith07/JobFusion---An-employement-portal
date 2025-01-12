@@ -98,6 +98,7 @@ router.get("/applied-jobs",verifyToken, authorizeRole('seeker'), async (req, res
   try {
     const { jobsCollections, seekersCollection } = await connectToDatabase();
     const id = req.user._id;
+    console.log(id)
     // Convert id to ObjectId
     const objectId = new ObjectId(id);
     // Find the job document by its id

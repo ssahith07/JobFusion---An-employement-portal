@@ -142,20 +142,10 @@ router.get("/view-resume/:id",verifyToken, async (req, res) => {
   try {
     const id = req.params.id;
     console.log(id);
-    console.log("Hello");
-    // Assuming you have a collection named `resumeCollection`
-    // const resume = await resumeCollection.findOne({
-    //   _id: new ObjectId(id),
-    // });
     const resume = await resumeCollection.findOne({
       // _id: new ObjectId(id),
       seekerId: id,
     });
-
-    // console.log(
-    //   "Resume Content Length:",
-    //   resume.resume ? resume.resume.length : "N/A"
-    // );
 
     if (!resume) {
       return res.status(404).send({
@@ -187,12 +177,7 @@ router.get("/view-res/:id",verifyToken, authorizeRole('seeker'), async (req, res
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
-    console.log(id);
-    console.log("Hello");
-    // Assuming you have a collection named `resumeCollection`
-    // const resume = await resumeCollection.findOne({
-    //   _id: new ObjectId(id),
-    // });
+    // console.log(id);
     const resume = await resumeCollection.findOne({
       // _id: new ObjectId(id),
       seekerId: id,

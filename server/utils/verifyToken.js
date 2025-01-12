@@ -43,6 +43,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
+    // console.log(authHeader);
     if (!authHeader) {
       return res.status(401).json({ message: "No token provided" });
     }
@@ -61,6 +62,8 @@ const verifyToken = async (req, res, next) => {
     if (err) {
       return res.status(401).json({ message: "Token error" });
     }
+
+  
     req.user = decoded; // Attach user data from the token to the request object
     next(); // Allow request to proceed to the next middleware or route
   });

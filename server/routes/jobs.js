@@ -60,19 +60,40 @@ router.get("/all-gjobs",verifyToken,authorizeRole('seeker'), async (req, res) =>
 });
 
 // importing single job.
-router.get("/all-jobs/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
+router.get("/all-jobs/:id", verifyToken, authorizeRole('seeker'), async (req, res) => {
+  // console.log("Route params:", req.params);
+  const { id } = req.params;  // Ensure id is retrieved correctly from route params
+  // console.log("Job ID:", id);  // Verify if the id is correctly logged
+
+  // Check if the id is a valid ObjectId
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Job ID format" });
+  }
+
   const {
     recruitersCollection,
     seekersCollection,
     jobsCollections,
     resumeCollection,
   } = await connectToDatabase();
-  const id = req.params.id;
-  const job = await jobsCollections.findOne({
-    _id: new ObjectId(id),
-  });
-  res.send(job);
+
+  try {
+    const job = await jobsCollections.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.send(job);
+  } catch (error) {
+    console.error("Error retrieving job details:", error);
+    res.status(500).json({ message: "Error retrieving job details" });
+  }
 });
+
+
 
 router.get("/all-gjobs/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
