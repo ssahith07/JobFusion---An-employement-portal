@@ -11,14 +11,14 @@ const AppliedJobs = () => {
   useEffect(() => {
     fetchAppliedJobs();
   }, []);
-
+  const token = localStorage.getItem("token");
   const fetchAppliedJobs = async () => {
     try {
       const response = await fetch(`http://localhost:5000/applied-jobs`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': 'bearer ' + localStorage.getItem("token"),
+          "Authorization":`Bearer ${token}`,
         },
       });
 

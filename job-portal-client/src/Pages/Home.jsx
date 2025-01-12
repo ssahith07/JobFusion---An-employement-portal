@@ -77,45 +77,45 @@ const Home = () => {
   }, [selectedSector, roles, email]);
   
 
-  // {roles==='seeker'?(useEffect(() => {
-  //   setIsLoading(true);
-  //   if (selectedSector === 'private') {
-  //     fetch("http://localhost:5000/all-jobs")
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         setJobs(data);
-  //         setIsLoading(false);
-  //         localStorage.setItem('selectedSector','private');
-  //       });
-  //   } else if (selectedSector === 'government') {
-  //     fetch("http://localhost:5000/all-gjobs")
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         setJobs(data);
-  //         setIsLoading(false);
-  //         localStorage.setItem('selectedSector','governement');
-  //       });
-  //   }
-  // }, [selectedSector])):(useEffect(() => {
-  //   setIsLoading(true);
-  //   if (selectedSector === 'private') {
-  //     fetch(`http://localhost:5000/mypJobs/${email}`)
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         setJobs(data);
-  //         setIsLoading(false);
-  //         localStorage.setItem('selectedSector','private');
-  //       });
-  //   } else if (selectedSector === 'government') {
-  //     fetch(`http://localhost:5000/mygJobs/${email}`)
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         setJobs(data);
-  //         setIsLoading(false);
-  //         localStorage.setItem('selectedSector','governement');
-  //       });
-  //   }
-  // }, [selectedSector]))}
+// {roles==='seeker'?(useEffect(() => {
+//   setIsLoading(true);
+//   if (selectedSector === 'private') {
+//     fetch("http://localhost:5000/all-jobs")
+//       .then(res => res.json())
+//       .then(data => {
+//         setJobs(data);
+//         setIsLoading(false);
+//         localStorage.setItem('selectedSector','private');
+//       });
+//   } else if (selectedSector === 'government') {
+//     fetch("http://localhost:5000/all-gjobs")
+//       .then(res => res.json())
+//       .then(data => {
+//         setJobs(data);
+//         setIsLoading(false);
+//         localStorage.setItem('selectedSector','governement');
+//       });
+//   }
+// }, [selectedSector])):(useEffect(() => {
+//   setIsLoading(true);
+//   if (selectedSector === 'private') {
+//     fetch(`http://localhost:5000/mypJobs/${email}`)
+//       .then(res => res.json())
+//       .then(data => {
+//         setJobs(data);
+//         setIsLoading(false);
+//         localStorage.setItem('selectedSector','private');
+//       });
+//   } else if (selectedSector === 'government') {
+//     fetch(`http://localhost:5000/mygJobs/${email}`)
+//       .then(res => res.json())
+//       .then(data => {
+//         setJobs(data);
+//         setIsLoading(false);
+//         localStorage.setItem('selectedSector','governement');
+//       });
+//   }
+// }, [selectedSector]))}
 
   console.log(jobs)
 

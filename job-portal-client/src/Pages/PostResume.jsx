@@ -9,7 +9,7 @@ const PostResume = () => {
   const [resume, setResume] = useState(false);
   const [profile, setProfile] = useState([]);
   const [info, setInfo] = useState(null);
-  const token = localStorage.getItem("item");
+  const token = localStorage.getItem("token");
   const sid = localStorage.getItem("id");
 
   useEffect(() => {
@@ -19,7 +19,8 @@ const PostResume = () => {
     console.log(sid);
     const url = `http://localhost:5000/profile-info/${sid}`;
     const headers = {
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
     };
 
     fetch(url, { headers })
@@ -43,15 +44,6 @@ const PostResume = () => {
       .catch((error) => {
         console.log(error);
       });
-    // if (resinfo) {
-    //   setInfo(resinfo);
-    //   reset({
-    //     fullName: resinfo.fullName,
-    //     email: resinfo.email,
-    //     number: resinfo.number,
-    //     description: resinfo.description,
-    //   });
-    // }
   }, []);
   console.log(info);
 
@@ -122,7 +114,25 @@ const PostResume = () => {
 
   const viewRes = async (id) => {
     try {
-      window.open(`http://localhost:5000/view-res/${id}`, "_blank");
+      const token = localStorage.getItem("token"); // Get the token from localStorage
+  
+      const response = await fetch(`http://localhost:5000/view-res/${id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Add the token to the request headers
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch resume");
+      }
+  
+      // Convert the response to a Blob (binary data)
+      const blob = await response.blob();
+  
+      // Create a URL for the Blob and open it in a new tab
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error getting the resume: ", error);
     }

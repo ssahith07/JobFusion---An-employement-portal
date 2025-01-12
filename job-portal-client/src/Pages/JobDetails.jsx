@@ -14,18 +14,25 @@ const JobDetails = () => {
   const logo = "https://i.ibb.co/2NTT5xs/NE-Preview1-1.png";
   const resume = localStorage.getItem("resume");
   const seeker = localStorage.getItem('id');
-  console.log(resume)
+
   useEffect(() => {
+    const token = localStorage.getItem('token'); // Get the token from localStorage
+
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`, // Add the token to the request headers
+  };
+
     if (sect === "private") {
-      fetch(`http://localhost:5000/all-jobs/${id}`)
+      fetch(`http://localhost:5000/all-jobs/${id}`,{headers})
         .then((res) => res.json())
         .then((data) => setJob(data));
     } else if (sect === "governement") {
-      fetch(`http://localhost:5000/all-gjobs/${id}`)
+      fetch(`http://localhost:5000/all-gjobs/${id}`,{headers})
         .then((res) => res.json())
         .then((data) => setJob(data));
     }
-  }, [id]);
+  }, [id,sect]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,7 +41,7 @@ const JobDetails = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
@@ -47,7 +54,7 @@ const JobDetails = () => {
     fetch(`http://localhost:5000/apply-job/${id}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ seekerId: id }),
