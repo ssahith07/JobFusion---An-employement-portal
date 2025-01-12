@@ -1,6 +1,7 @@
 // routes/users.js
 
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const { Seeker, Recruiter, validate } = require('../models/user');
 const bcrypt = require('bcrypt');
 const { connectToDatabase } = require('../database');

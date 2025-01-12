@@ -1,11 +1,12 @@
+// routes/resume.js
+
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
 const { connectToDatabase } = require("../database");
 const { ObjectId } = require("mongodb");
-const verifyToken = require("../utils/verifyToken");
-
+const {verifyToken,authorizeRole} = require("../utils/verifyToken");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -23,7 +24,7 @@ router.get("/checking", verifyToken, (req, res) => {
   res.send("Hello World!!");
 });
 
-router.get("/all-res/:id", async (req, res) => {
+router.get("/all-res/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
@@ -45,7 +46,7 @@ router.get("/all-res/:id", async (req, res) => {
 // posting the resume with all fields.
 router.post(
   "/post-res",
-  verifyToken,
+  verifyToken, authorizeRole('seeker'),
   upload.single("resume"),
   async (req, res) => {
     const seekerId = req.user._id;
@@ -95,7 +96,7 @@ router.post(
   }
 );
 
-router.get("/profile-info/:id", async (req, res) => {
+router.get("/profile-info/:id",  verifyToken, authorizeRole('seeker'),async (req, res) => {
   const { profileCollection, resumeCollection } = await connectToDatabase();
   // const newId = new ObjectId(id);
   const id = req.params.id;
@@ -111,7 +112,7 @@ router.get("/testing", async (req, res) => {
 });
 // deleting the resume of pdf format.
 
-router.delete("/all-res/:id", async (req, res) => {
+router.delete("/all-res/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   console.log("deleting resume");
   const { resumeCollection, profileCollection } = await connectToDatabase();
   const id = req.params.id;
@@ -136,7 +137,7 @@ router.delete("/all-res/:id", async (req, res) => {
 //  recruiter side view resume
 
 // Showing the resume of pdf format using
-router.get("/view-resume/:id", async (req, res) => {
+router.get("/view-resume/:id",verifyToken, async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
@@ -182,7 +183,7 @@ router.get("/view-resume/:id", async (req, res) => {
 });
 
 // Seekers
-router.get("/view-res/:id", async (req, res) => {
+router.get("/view-res/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;

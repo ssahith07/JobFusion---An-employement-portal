@@ -1,5 +1,7 @@
+// routes/jobsApply.js
+
 const express = require("express");
-const verifyToken = require("../utils/verifyToken");
+const {verifyToken, authorizeRole } = require("../utils/verifyToken");
 const { connectToDatabase } = require("../database");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
@@ -9,7 +11,7 @@ router.get("/api/checking", (req, res) => {
 });
 
 // Using job id applying the job
-router.post("/apply-job/:id", verifyToken, async (req, res) => {
+router.post("/apply-job/:id", verifyToken, authorizeRole('seeker'), async (req, res) => {
   const { jobsCollections, seekersCollection } = await connectToDatabase();
   const { _id } = req.user;
   const id = req.params.id;
@@ -61,7 +63,7 @@ router.post("/acc/:id", verifyToken, async (req, res) => {
 
 
 // Using job id to get applied users
-router.get("/applied-users/:id", async (req, res) => {
+router.get("/applied-users/:id", verifyToken, authorizeRole('recruiter'),async (req, res) => {
   try {
     // console.log("looking for appliedUsers");
     const { jobsCollections, profileCollection } = await connectToDatabase();
@@ -92,7 +94,7 @@ router.get("/applied-users/:id", async (req, res) => {
 });
 
 
-router.get("/applied-jobs",verifyToken, async (req, res) => {
+router.get("/applied-jobs",verifyToken, authorizeRole('seeker'), async (req, res) => {
   try {
     const { jobsCollections, seekersCollection } = await connectToDatabase();
     const id = req.user._id;
@@ -119,34 +121,8 @@ router.get("/applied-jobs",verifyToken, async (req, res) => {
   }
 });
 
-// router.get("/acc-rej/:id",verifyToken, async (req, res) => {
-//   try {
-//     const { jobsCollections, seekersCollection } = await connectToDatabase();
-//     const id = req.params.id;
-//     // console.log(id)
-//     // Convert id to ObjectId
-//     const objectId = new ObjectId(id);
-//     // Find the job document by its id
-//     const acc = await jobsCollections.findOne({ _id: objectId });
-//     console.log("error 1")
-//     const { accepted } = acc || { accepted: [] };
-//     const jobPromises = accepted.map(async (id) => {
-//       const job = await seekersCollection.findOne({
-//         _id: new ObjectId(id),
-//       });
-//       return job;
-//     });
 
-//     const jobs = await Promise.all(jobPromises);
-
-//     res.send(jobs);
-//   } catch (error) {
-//     console.error("Error retrieving job details:", error);
-//     res.status(500).send(error.message);
-//   }
-// });
-
-router.get("/acc-rej/:id", async (req, res) => {
+router.get("/acc-rej/:id",verifyToken, async (req, res) => {
   try {
     const { jobsCollections } = await connectToDatabase();
     const id = req.params.id;

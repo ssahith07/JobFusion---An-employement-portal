@@ -13,52 +13,111 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+
   const roles = localStorage.getItem('role','seeker');
-  const email = localStorage.getItem('email')
+  const email = localStorage.getItem('email');
+  const token = localStorage.getItem('token');
+
   // console.log(email);
   // console.log(roles)
   
-  {roles==='seeker'?(useEffect(() => {
-    setIsLoading(true);
-    if (selectedSector === 'private') {
-      fetch("http://localhost:5000/all-jobs")
-        .then(res => res.json())
-        .then(data => {
-          setJobs(data);
-          setIsLoading(false);
-          localStorage.setItem('selectedSector','private');
-        });
-    } else if (selectedSector === 'government') {
-      fetch("http://localhost:5000/all-gjobs")
-        .then(res => res.json())
-        .then(data => {
-          setJobs(data);
-          setIsLoading(false);
-          localStorage.setItem('selectedSector','governement');
-        });
-    }
-  }, [selectedSector])):(useEffect(() => {
-    setIsLoading(true);
-    if (selectedSector === 'private') {
-      fetch(`http://localhost:5000/mypJobs/${email}`)
-        .then(res => res.json())
-        .then(data => {
-          setJobs(data);
-          setIsLoading(false);
-          localStorage.setItem('selectedSector','private');
-        });
-    } else if (selectedSector === 'government') {
-      fetch(`http://localhost:5000/mygJobs/${email}`)
-        .then(res => res.json())
-        .then(data => {
-          setJobs(data);
-          setIsLoading(false);
-          localStorage.setItem('selectedSector','governement');
-        });
-    }
-  }, [selectedSector]))}
 
-  // console.log(jobs)
+  useEffect(() => {
+    setIsLoading(true);
+  
+    // Conditional fetching logic based on the user's role
+    if (!token) {
+      console.log("Token is missing!");
+      // Optionally handle this scenario by showing a message or redirecting to login page
+      return;
+    }
+    
+    const fetchJobs = async () => {
+      let url = '';
+      if (roles === 'seeker') {
+        if (selectedSector === 'private') {
+          url = "http://localhost:5000/all-jobs";
+        } else if (selectedSector === 'government') {
+          url = "http://localhost:5000/all-gjobs";
+        }
+      } else if (roles === 'recruiter') {
+        if (selectedSector === 'private') {
+          url = `http://localhost:5000/mypJobs/${email}`;
+        } else if (selectedSector === 'government') {
+          url = `http://localhost:5000/mygJobs/${email}`;
+        }
+      }
+  
+      console.log("Token:", token); // Log token for debugging
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, // Add token here
+      };
+      console.log("Headers:", headers); // Log headers for debugging
+  
+      // Fetch the jobs data
+      if (url) {
+        try {
+          const response = await fetch(url, {headers} );
+          if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          const data = await response.json();
+          setJobs(data);
+          setIsLoading(false);
+          localStorage.setItem('selectedSector', selectedSector);
+        } catch (error) {
+          console.error("Error fetching jobs:", error.message);
+          setIsLoading(false);
+        }
+      }
+    };
+  
+    fetchJobs();
+  }, [selectedSector, roles, email]);
+  
+
+  // {roles==='seeker'?(useEffect(() => {
+  //   setIsLoading(true);
+  //   if (selectedSector === 'private') {
+  //     fetch("http://localhost:5000/all-jobs")
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         setJobs(data);
+  //         setIsLoading(false);
+  //         localStorage.setItem('selectedSector','private');
+  //       });
+  //   } else if (selectedSector === 'government') {
+  //     fetch("http://localhost:5000/all-gjobs")
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         setJobs(data);
+  //         setIsLoading(false);
+  //         localStorage.setItem('selectedSector','governement');
+  //       });
+  //   }
+  // }, [selectedSector])):(useEffect(() => {
+  //   setIsLoading(true);
+  //   if (selectedSector === 'private') {
+  //     fetch(`http://localhost:5000/mypJobs/${email}`)
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         setJobs(data);
+  //         setIsLoading(false);
+  //         localStorage.setItem('selectedSector','private');
+  //       });
+  //   } else if (selectedSector === 'government') {
+  //     fetch(`http://localhost:5000/mygJobs/${email}`)
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         setJobs(data);
+  //         setIsLoading(false);
+  //         localStorage.setItem('selectedSector','governement');
+  //       });
+  //   }
+  // }, [selectedSector]))}
+
+  console.log(jobs)
 
   const handleSectorChange =(sector)=>{
     setSelectedSector(sector);

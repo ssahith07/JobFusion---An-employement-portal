@@ -1,6 +1,8 @@
+// routes/jobs.js
+
 const express = require("express");
 const router = express.Router();
-
+const { verifyToken, authorizeRole } = require("../utils/verifyToken");
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 // const multer = require('multer');
@@ -9,7 +11,7 @@ const { connectToDatabase } = require("../database");
 // const jwt = require('jsonwebtoken');
 
 // Posting a job`
-router.post("/post-job", async (req, res) => {
+router.post("/post-job", verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { jobsCollections } = await connectToDatabase();
   const body = req.body;
   body.appliedUsers = [];
@@ -27,7 +29,7 @@ router.post("/post-job", async (req, res) => {
     });
   }
 });
-router.post("/post-gjob", async (req, res) => {
+router.post("/post-gjob", verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   const body = req.body;
   body.createAt = new Date();
@@ -44,21 +46,21 @@ router.post("/post-gjob", async (req, res) => {
 });
 
 // importing all jobs
-router.get("/all-jobs", async (req, res) => {
+router.get("/all-jobs",verifyToken,authorizeRole('seeker'), async (req, res) => {
   const { jobsCollections } = await connectToDatabase();
   const jobs = await jobsCollections.find({}).toArray();
   // const jobs = [...pjobs, ...gjobs];
   res.send(jobs);
 });
 
-router.get("/all-gjobs", async (req, res) => {
+router.get("/all-gjobs",verifyToken,authorizeRole('seeker'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   const gjobs = await govtCollection.find({}).toArray();
   res.send(gjobs);
 });
 
 // importing single job.
-router.get("/all-jobs/:id", async (req, res) => {
+router.get("/all-jobs/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   const {
     recruitersCollection,
     seekersCollection,
@@ -72,7 +74,7 @@ router.get("/all-jobs/:id", async (req, res) => {
   res.send(job);
 });
 
-router.get("/all-gjobs/:id", async (req, res) => {
+router.get("/all-gjobs/:id",verifyToken, authorizeRole('seeker'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   const id = req.params.id;
   const job = await govtCollection.findOne({
@@ -82,7 +84,7 @@ router.get("/all-gjobs/:id", async (req, res) => {
 });
 
 // importing jobs by email.
-router.get("/mypJobs/:email", async (req, res) => {
+router.get("/mypJobs/:email",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { jobsCollections } = await connectToDatabase();
   // console.log(req.params.email)
   const jobs = await jobsCollections
@@ -90,7 +92,7 @@ router.get("/mypJobs/:email", async (req, res) => {
     .toArray();
   res.send(jobs);
 });
-router.get("/mygJobs/:email", async (req, res) => {
+router.get("/mygJobs/:email",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   // console.log(req.params.email)
   const jobs = await govtCollection
@@ -101,7 +103,7 @@ router.get("/mygJobs/:email", async (req, res) => {
 
 // deleting a job by using job id
 
-router.delete("/job/:id", async (req, res) => {
+router.delete("/job/:id",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { seekersCollection, jobsCollections } = await connectToDatabase();
   const jobId = req.params.id;
   const filter = { _id: new ObjectId(jobId) };
@@ -149,7 +151,8 @@ router.delete("/job/:id", async (req, res) => {
     });
   }
 });
-router.delete("/gjob/:id", async (req, res) => {
+
+router.delete("/gjob/:id",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) };
@@ -169,7 +172,7 @@ router.delete("/gjob/:id", async (req, res) => {
 
 // Editing Jobs
 
-router.patch("/edit-job/:id", async (req, res) => {
+router.patch("/edit-job/:id",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const {
     recruitersCollection,
     seekersCollection,
@@ -189,7 +192,7 @@ router.patch("/edit-job/:id", async (req, res) => {
   const result = await jobsCollections.updateOne(filter, updateDoc, options);
   res.send(result);
 });
-router.patch("/edit-gjob/:id", async (req, res) => {
+router.patch("/edit-gjob/:id",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { govtCollection } = await connectToDatabase();
   const id = req.params.id;
   const jobData = req.body;
