@@ -33,7 +33,7 @@ router.post("/apply-job/:id", verifyToken, authorizeRole('seeker'), async (req, 
   res.send(updatedJob);
 });
 
-router.post("/acc/:id", verifyToken, async (req, res) => {
+router.post("/acc/:id", verifyToken,authorizeRole('recruiter'), async (req, res) => {
   try {
     const { jobsCollections } = await connectToDatabase();
     const jobId = req.params.id;
@@ -123,7 +123,7 @@ router.get("/applied-jobs",verifyToken, authorizeRole('seeker'), async (req, res
 });
 
 
-router.get("/acc-rej/:id",verifyToken, async (req, res) => {
+router.get("/acc-rej/:id",verifyToken,authorizeRole('recruiter'), async (req, res) => {
   try {
     const { jobsCollections } = await connectToDatabase();
     const id = req.params.id;
@@ -143,7 +143,7 @@ router.get("/acc-rej/:id",verifyToken, async (req, res) => {
 });
 
 
-router.get("/applied",verifyToken, async (req, res) => {
+router.get("/applied",verifyToken,authorizeRole('seeker'), async (req, res) => {
   try {
     const {seekersCollection} = await connectToDatabase();
     const id = req.user._id;

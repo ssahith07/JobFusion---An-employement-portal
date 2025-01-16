@@ -1,11 +1,11 @@
-import React from 'react'
+// import React from 'react'
 
-const postGjob = () => {
-  return (
-    <div>
+// const postGjob = () => {
+//   return (
+//     <div>
       
-    </div>
-  )
-}
+//     </div>
+//   )
+// }
 
-export default postGjob
+// export default postGjob

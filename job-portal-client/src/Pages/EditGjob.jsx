@@ -33,7 +33,10 @@ const EditGjob = () => {
     // console.log(data)
     fetch(`http://localhost:5000/edit-gjob/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        'content-Type' : 'application/json',
+        "Authorization" : `Bearer ${token}`
+      },
       body: JSON.stringify(data),
     })
       .then((res) => res.json())

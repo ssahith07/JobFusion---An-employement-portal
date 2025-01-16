@@ -68,9 +68,13 @@ const AppliedUsers = () => {
   useEffect(() => {
     const fetchAppliedUsers = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/applied-users/${id}`
-        );
+        const response = await fetch(`http://localhost:5000/applied-users/${id}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // Add the token to the request headers
+            "Content-Type": "application/json", // Ensure correct content type
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch applied users");
         }
@@ -88,11 +92,30 @@ const AppliedUsers = () => {
 
   const viewRes = async (id) => {
     try {
-      window.open(`http://localhost:5000/view-resume/${id}`, "_blank");
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+  
+      const response = await fetch(`http://localhost:5000/view-resume/${id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Add the Authorization header
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch resume");
+      }
+  
+      // Convert the response to a Blob (binary data)
+      const blob = await response.blob();
+  
+      // Create a URL for the Blob and open it in a new tab
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error getting the resume: ", error);
     }
   };
+  
 
   // const accRej = (seekerId) =>{
   //   fetch(`http://localhost:5000/acc/${id}`, {
@@ -122,7 +145,7 @@ const AppliedUsers = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({ action: "accept", seekerId }), // Sending action as "accept"
     })
@@ -142,7 +165,7 @@ const AppliedUsers = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({ action: "reject", seekerId }), // Sending action as "reject"
     })
@@ -161,7 +184,7 @@ const AppliedUsers = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
     })
       .then((res) => res.json())

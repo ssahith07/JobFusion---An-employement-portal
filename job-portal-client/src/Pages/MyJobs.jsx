@@ -10,13 +10,20 @@ const MyJobs = () => {
   const email = localStorage.getItem('email');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       // if(selectedSector==='private'){}
       try {
-        const response = await fetch(`http://localhost:5000/my${selectedSect}Jobs/${email}`);
+        const response = await fetch(`http://localhost:5000/my${selectedSect}Jobs/${email}`, {
+          method: "GET", // Specify the HTTP method (default is GET)
+          headers: {
+            "Content-Type": "application/json", // Specify the content type
+            "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        });
         const data = await response.json();
 
         // console.log('API Response:', data);
@@ -70,6 +77,9 @@ const MyJobs = () => {
     console.log(selectedSect)
     fetch(endpoint, {
       method: 'DELETE',
+      headers:{
+        "Authorization":`Bearer ${token}`
+      }
     })
       .then((res) => res.json())
       .then((data) => {

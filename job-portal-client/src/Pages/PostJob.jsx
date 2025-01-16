@@ -6,6 +6,7 @@ const PostJob = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [sect, setSect] = useState("private");
+  const token = localStorage.getItem("token");
   const {
     register,
     handleSubmit,
@@ -23,7 +24,10 @@ const PostJob = () => {
     console.log(data);
     fetch("http://localhost:5000/post-job", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+         "Content-Type": "application/json",
+         "Authorization":`Bearer ${token}`
+        },
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
@@ -40,7 +44,10 @@ const PostJob = () => {
     console.log("Submitting government job form with data:", data);
     fetch("http://localhost:5000/post-gjob", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization":`Bearer ${token}`
+       },
       body: JSON.stringify(data),
     })
       .then((res) => res.json())

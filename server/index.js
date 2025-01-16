@@ -24,10 +24,11 @@ const upload = multer({ storage: storage });
 //middleware
 app.use(express.json())
 const corsOptions = {
-  origin: 'http://localhost:5173', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added OPTIONS
   credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"], // Allow cookies or tokens to be included in requests
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(express.urlencoded({ extended: true }));
 // Apply CORS middleware

@@ -15,13 +15,16 @@ const EditJob = () => {
     reset,
     formState: { errors },
   } = useForm()
-
+  const token = localStorage.getItem("token");
   const onSubmit = (data) => {
     data.skills = selectedOption;
     // console.log(data)
     fetch(`http://localhost:5000/edit-job/${id}`, {
       method: "PATCH",
-      headers: {'content-Type' : 'application/json'},
+      headers: {
+        'content-Type' : 'application/json',
+        "Authorization" : `Bearer ${token}`
+      },
       body: JSON.stringify(data)
     })
     .then(res => res.json())

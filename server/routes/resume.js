@@ -10,6 +10,7 @@ const {verifyToken,authorizeRole} = require("../utils/verifyToken");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
 // const {
 //   recruitersCollection,
 //   seekersCollection,
@@ -96,6 +97,40 @@ router.post(
   }
 );
 
+//updating the profile of user by seeker
+// PUT endpoint to update profile
+
+    // If you're using multer for file uploads
+
+router.put('/update-profile/:id', verifyToken, upload.single('resume'), async (req, res) => {
+  try {
+    const { profileCollection } = await connectToDatabase();
+    const { id } = req.params;
+    const updateData = {
+      fullName: req.body.fullName,
+      email: req.body.email,
+      number: req.body.number,
+      description: req.body.description
+    };
+    
+    // If a new resume file is uploaded, add it to updateData
+    if (req.file) {
+      updateData.resume = req.file.buffer;
+    }
+
+    const result = await profileCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    res.json(result);
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 router.get("/profile-info/:id",  verifyToken, authorizeRole('seeker'),async (req, res) => {
   const { profileCollection, resumeCollection } = await connectToDatabase();
   // const newId = new ObjectId(id);
@@ -137,7 +172,7 @@ router.delete("/all-res/:id",verifyToken, authorizeRole('seeker'), async (req, r
 //  recruiter side view resume
 
 // Showing the resume of pdf format using
-router.get("/view-resume/:id",verifyToken, async (req, res) => {
+router.get("/view-resume/:id",verifyToken, authorizeRole('recruiter'), async (req, res) => {
   const { resumeCollection } = await connectToDatabase();
   try {
     const id = req.params.id;
