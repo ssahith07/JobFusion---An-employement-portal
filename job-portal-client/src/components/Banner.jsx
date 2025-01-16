@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {FiMapPin, FiSearch} from 'react-icons/fi'
 
-
+//This is a test.
 const Banner = ({query,location, handleInputChange,handleInputChange1}) => {
 
     
